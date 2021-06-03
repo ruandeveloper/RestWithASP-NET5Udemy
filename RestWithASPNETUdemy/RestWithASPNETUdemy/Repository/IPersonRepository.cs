@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using RestWithASPNETUdemy.Model;
+using RestWithASPNETUdemy.Repository.Generic;
 
 namespace RestWithASPNETUdemy.Repository
 {
-    public interface IPersonRepository
+    public interface IPersonRepository : IRepository<Person>
     {
-        Person Create(Person person);
-        Person FindById(long personId);
-        List<Person> FindAll();
-        Person Update(Person person);
-        void Delete(long personId);
-        bool Exists(long id);
+        Person Disable(long id);
+
+        List<Person> FindByName(string firstName, string lastName);
     }
 }

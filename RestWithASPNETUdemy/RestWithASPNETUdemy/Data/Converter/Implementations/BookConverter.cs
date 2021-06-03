@@ -6,42 +6,42 @@ using RestWithASPNETUdemy.Model;
 
 namespace RestWithASPNETUdemy.Data.Converter.Implementations
 {
-    public class PersonConverter : IParser<PersonVO, Person>, IParser<Person, PersonVO>
+    public class BookConverter : IParser<BookVO, Book>, IParser<Book, BookVO>
     {
-        public Person Parse(PersonVO origin)
+        public Book Parse(BookVO origin)
         {
             if (origin == null) return null;
 
-            return new Person()
+            return new Book()
             {
                 Id = origin.Id,
-                FirstName = origin.FirstName,
-                LastName = origin.LastName,
-                Address = origin.Address,
-                Gender = origin.Gender
+                Author = origin.Author,
+                Price = origin.Price,
+                Title = origin.Title,
+                LaunchDate = origin.LaunchDate
             };
         }
 
-        public List<Person> Parse(List<PersonVO> origin)
+        public List<Book> Parse(List<BookVO> origin)
         {
             return origin?.Select(Parse).ToList();
         }
 
-        public PersonVO Parse(Person origin)
+        public BookVO Parse(Book origin)
         {
             if (origin == null) return null;
 
-            return new PersonVO()
+            return new BookVO()
             {
                 Id = origin.Id,
-                FirstName = origin.FirstName,
-                LastName = origin.LastName,
-                Address = origin.Address,
-                Gender = origin.Gender
+                Author = origin.Author,
+                Price = origin.Price,
+                Title = origin.Title,
+                LaunchDate = origin.LaunchDate
             };
         }
 
-        public List<PersonVO> Parse(List<Person> origin)
+        public List<BookVO> Parse(List<Book> origin)
         {
             return origin?.Select(Parse).ToList();
         }

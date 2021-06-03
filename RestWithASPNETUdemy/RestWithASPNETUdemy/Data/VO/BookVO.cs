@@ -1,22 +1,22 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using RestWithASPNETUdemy.Hypermedia.Abstract;
+using RestWithASPNETUdemy.Hypermedia.Filters;
 using RestWithASPNETUdemy.Model.Base;
 
-namespace RestWithASPNETUdemy.Model
+namespace RestWithASPNETUdemy.Data.VO
 {
-    [Table("books")]
-    public class Book : BaseEntity
+    public class BookVO : ISupportsHyperMedia
     {
-        [Column("author")]
+        public long Id { get; set; }
+        
         public string Author { get; set; }
         
-        [Column("launch_date")]
         public DateTime LaunchDate {get;set;} 
         
-        [Column("price")]
         public decimal Price {get;set;} 
         
-        [Column("title")]
-        public string Title {get;set;}      
+        public string Title {get;set;}
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }

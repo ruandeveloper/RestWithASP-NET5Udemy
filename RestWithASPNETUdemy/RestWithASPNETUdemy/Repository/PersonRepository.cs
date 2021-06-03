@@ -3,73 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using RestWithASPNETUdemy.Model;
 using RestWithASPNETUdemy.Model.Context;
+using RestWithASPNETUdemy.Repository.Generic;
 
-namespace RestWithASPNETUdemy.Repository.Implementations
+namespace RestWithASPNETUdemy.Repository
 {
-    public class PersonRepositoryImplementation : IPersonRepository
+    public class PersonRepository : GenericRepository<Person>, IPersonRepository
     {
-        private MySQLContext _context;
-
-        public PersonRepositoryImplementation(MySQLContext context)
-        {
-            _context = context;
-        }
+        public PersonRepository(MySQLContext context) : base(context) {}
         
-        public Person Create(Person person)
+        public Person Disable(long id)
         {
-            try
-            {
-                _context.Add(person);
-                _context.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            
-            return person;
-        }
+            if (!Exists(id)) return null;
 
-        public Person FindById(long id)
-        {
-            return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
-        }
+            var person = FindById(id);
 
-        public List<Person> FindAll()
-        {
-            return _context.Persons.ToList();
-        }
+            if (person == null) return null;
 
-        public Person Update(Person person)
-        {
-            if (!Exists(person.Id)) return null;
-
-            var result = FindById(person.Id);
-
-            if (result == null) return person;
-            
-            try
-            {
-                _context.Entry(result).CurrentValues.SetValues(person);
-                _context.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return person;
-        }
-        
-        public void Delete(long personId)
-        {
-            var result = FindById(personId);
-            
-            if (result == null) return;
+            person.Enabled = false;
 
             try
             {
-                _context.Persons.Remove(result);
+                _context.Entry(person).CurrentValues.SetValues(person);
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -77,11 +31,33 @@ namespace RestWithASPNETUdemy.Repository.Implementations
                 Console.WriteLine(e);
                 throw;
             }
+
+            return person;
         }
 
-        public bool Exists(long id)
+        public List<Person> FindByName(string firstName, string lastName)
         {
-            return _context.Persons.Any(p => p.Id.Equals(id));
+            if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+            {
+                return _context.Persons.Where(
+                    p => p.FirstName.Contains(firstName) 
+                         && p.LastName.Contains(lastName)).ToList();
+            } 
+            
+            if (!string.IsNullOrWhiteSpace(firstName))
+            {
+                return _context.Persons.Where(
+                    p => p.FirstName.Contains(firstName) 
+                         ).ToList();
+            } 
+            
+            if (!string.IsNullOrWhiteSpace(lastName))
+            {
+                return _context.Persons.Where(
+                    p => p.LastName.Contains(lastName)).ToList();
+            }
+
+            return null;
         }
     }
 }

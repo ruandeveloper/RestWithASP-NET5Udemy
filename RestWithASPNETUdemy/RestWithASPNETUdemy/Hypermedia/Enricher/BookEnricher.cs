@@ -8,12 +8,12 @@ using RestWithASPNETUdemy.Hypermedia.Filters;
 
 namespace RestWithASPNETUdemy.Hypermedia.Enricher
 {
-    public class PersonEnricher : ContentResponseEnricher<PersonVO>
+    public class BookEnricher : ContentResponseEnricher<BookVO>
     {
         private readonly object _lock = new object();
-        protected override Task EnrichModel(PersonVO content, IUrlHelper urlHelper)
+        protected override Task EnrichModel(BookVO content, IUrlHelper urlHelper)
         {
-            var path = "api/persons/v1";
+            var path = "api/book/v1";
             string link = GetLink(content.Id, urlHelper, path);
             
             content.Links.Add(new HyperMediaLink()
@@ -57,7 +57,7 @@ namespace RestWithASPNETUdemy.Hypermedia.Enricher
             {
                 var url = new
                 {
-                    controller = contentId,
+                    controller = path,
                     id = contentId
                 };
 

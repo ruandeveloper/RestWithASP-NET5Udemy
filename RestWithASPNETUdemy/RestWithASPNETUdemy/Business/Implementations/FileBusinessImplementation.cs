@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using RestWithASPNETUdemy.Data.VO;
@@ -14,12 +15,13 @@ namespace RestWithASPNETUdemy.Business.Implementations
         public FileBusinessImplementation(IHttpContextAccessor context)
         {
             _context = context;
-            _basePath = Directory.GetCurrentDirectory() + "\\UploadDir\\";
+            _basePath = Directory.GetCurrentDirectory() + "/UploadDir";
         }
 
         public byte[] GetFile(string filename)
         {
-            throw new System.NotImplementedException();
+            var filePath = Path.Combine(_basePath, filename);
+            return File.ReadAllBytes(filePath);
         }
 
         public async Task<FileDetailVO> SaveFileToDisk(IFormFile file)
@@ -47,9 +49,16 @@ namespace RestWithASPNETUdemy.Business.Implementations
             return fileDetail;
         }
 
-        public Task<List<FileDetailVO>> SaveFilesToDisk(IList<IFormFile> file)
+        public async Task<List<FileDetailVO>> SaveFilesToDisk(IList<IFormFile> files)
         {
-            throw new System.NotImplementedException();
+            var list = new List<FileDetailVO>();
+
+            foreach (var file in files.ToList())
+            {
+                list.Add(await SaveFileToDisk(file));
+            }
+
+            return list;
         }
     }
 }
